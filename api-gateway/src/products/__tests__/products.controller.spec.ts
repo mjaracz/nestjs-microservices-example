@@ -38,4 +38,10 @@ describe('Products Controller', () => {
       expect(await productsService.sendToProductsQueue()).toEqual(['product1']);
     });
   });
+  describe('sendToProductIdQueue()', () => {
+    it('should return any product by id',async () => {
+      jest.spyOn(productsService, 'sendToProductIdQueue').mockImplementation(() => 'product by id' as undefined as Promise<Observable<any>>);
+      expect(await productsService.sendToProductIdQueue('2')).toEqual('product by id');
+    });
+  });
 });
