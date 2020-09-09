@@ -2,9 +2,11 @@ import {Test, TestingModule} from '@nestjs/testing'
 import {ProductsController} from '../products.controller'
 import {ProductsService} from '../products.service'
 import {ClientsModule, Transport} from '@nestjs/microservices'
+import {Observable} from 'rxjs'
 
 describe('Products Controller', () => {
-  let controller: ProductsController;
+  let productsController: ProductsController;
+  let productsService: ProductsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -23,10 +25,17 @@ describe('Products Controller', () => {
       providers: [ProductsService]
     }).compile();
 
-    controller = module.get<ProductsController>(ProductsController);
+    productsController = module.get<ProductsController>(ProductsController);
+    productsService = module.get<ProductsService>(ProductsService);
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(productsController).toBeDefined();
+  });
+  describe('sendToProductsQueue()', () => {
+    it('should return any products array ',async () => {
+      jest.spyOn(productsService, 'sendToProductsQueue').mockImplementation(() => ['product1'] as undefined as Promise<Observable<any>>);
+      expect(await productsService.sendToProductsQueue()).toEqual(['product1']);
+    });
   });
 });
