@@ -3,7 +3,7 @@ import {ProductsService} from '../products.service'
 import {ClientsModule, Transport} from '@nestjs/microservices'
 
 describe('ProductsService', () => {
-  let service: ProductsService
+  let productsService: ProductsService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -23,11 +23,11 @@ describe('ProductsService', () => {
       ],
     }).compile();
 
-    service = module.get<ProductsService>(ProductsService);
+    productsService = module.get<ProductsService>(ProductsService);
   })
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(productsService).toBeDefined();
   });
 
 })
