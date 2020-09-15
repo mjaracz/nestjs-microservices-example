@@ -17,5 +17,5 @@ $ cd products-worker && migrate-mongo up
 
 In root directory just type
 ```bash
-$ sh ./installDepsRunDocker.sh
+$ sh ./runAllServices.sh
 ```
