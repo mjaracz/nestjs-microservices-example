@@ -1,8 +1,16 @@
 ### NestJS MicroService NATS example ( Choreography )
 
+### Launch the project
+
+First of all install dependency, start database service and message broker service, then run each of microservice <br />
+If you use linux based operating system, to do above few things, just type in root directory <br/>
+```bash
+$ sh ./runAllServices.sh
+```
+
 ### database migrations
-First of all we need to fill our product database with data. <br/>
-Migration scripts are great for this. <br/>
+To fill our database with example product data. <br/>
+Use migration scripts which are great for this purpose. <br/>
 Install globally needed migration CLI package: <br/> 
 ```bash
 $ sudo npm install -g migrate-mongo
@@ -10,12 +18,4 @@ $ sudo npm install -g migrate-mongo
 Then fill database with data by using migration script written before, just type:
 ```bash
 $ cd products-worker && migrate-mongo up
-```
-
-
-### Launch the whole microservices project
-
-In root directory just type
-```bash
-$ sh ./runAllServices.sh
 ```
