@@ -1,4 +1,4 @@
 export class CreateMailDto {
-  readonly mail: string
-  readonly username: string
+  readonly mail: string;
+  readonly username: string;
 }
