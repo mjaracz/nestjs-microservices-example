@@ -1,18 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Product } from './interfaces/product.interface';
+import { ProductDocument, Product } from './schemas/product.schema';
 
 @Injectable()
 export class ProductsService {
   constructor(
-    @InjectModel('products') private readonly productModel: Model<Product>,
+    @InjectModel(Product.name)
+    private readonly productModel: Model<ProductDocument>,
   ) {}
 
-  async findAll() {
+  async findAll(): Promise<Product[]> {
     return this.productModel.find().exec();
   }
-  async findById(id: string) {
-    return this.productModel.find({ id: id }).exec();
+
+  async findById(id: string): Promise<Product> {
+    return this.productModel.findOne({ id: parseInt(id) }).exec();
   }
 }

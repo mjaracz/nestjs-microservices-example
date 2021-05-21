@@ -1,25 +1,21 @@
+import { NatsContext } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProductsController } from '../products.controller';
 import { ProductsService } from '../products.service';
-import { MongooseModule } from '@nestjs/mongoose';
-import { ProductsSchema } from '../schemas/products.schema';
-import { NatsContext } from '@nestjs/microservices';
+import { ProductsServiceMock } from '../../utils/unit-tests/product.service.mock';
 
 describe('Products Controller', () => {
   let controller: ProductsController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        MongooseModule.forRoot('mongodb://localhost:27017/db', {
-          useNewUrlParser: true,
-        }),
-        MongooseModule.forFeature([
-          { name: 'products', schema: ProductsSchema },
-        ]),
+      providers: [
+        {
+          provide: ProductsService,
+          useClass: ProductsServiceMock,
+        },
       ],
       controllers: [ProductsController],
-      providers: [ProductsService],
     }).compile();
 
     controller = module.get<ProductsController>(ProductsController);
@@ -30,19 +26,19 @@ describe('Products Controller', () => {
   });
   describe('when call findAll', () => {
     it('should return array of product', () => {
-      controller.findAll('', {} as NatsContext).then(res => {
-        expect(res.length).toBeTruthy();
+      return controller.findAll().then(res => {
+        expect(res.length).toBeGreaterThan(0);
       });
     });
   });
   describe('when call findById', () => {
-    it('should return product object', function() {
-      controller
+    it('should return product object', () => {
+      return controller
         .findById('', {
           getSubject: () => 'product.2',
         } as NatsContext)
         .then(res => {
-          expect(res[0]._id).toBeTruthy();
+          expect(res.id).toEqual(2);
         });
     });
   });
