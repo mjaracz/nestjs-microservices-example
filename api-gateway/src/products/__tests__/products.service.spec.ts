@@ -1,45 +1,36 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { ProductsService } from '../products.service';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
+import { ClientProxy } from '@nestjs/microservices';
+import { of } from 'rxjs';
+import { mock } from '../../utils/unit-test/client-proxy.mock';
 
 describe('ProductsService', () => {
   let productsService: ProductsService;
+  let simulationNatsClient: jest.Mocked<ClientProxy>;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        ClientsModule.register([
-          {
-            name: 'NATS_CLIENT',
-            transport: Transport.NATS,
-            options: {
-              url: 'nats://localhost:4222',
-            },
-          },
-        ]),
-      ],
-      providers: [ProductsService],
-    }).compile();
-
-    productsService = module.get<ProductsService>(ProductsService);
+  beforeEach(() => {
+    simulationNatsClient = mock<ClientProxy>('send');
+    productsService = new ProductsService(simulationNatsClient);
   });
 
   it('should be defined', () => {
     expect(productsService).toBeDefined();
   });
-  describe('sendToProductsQueue()', () => {
-    it('should return promise fulfilled with Observable', async () => {
-      await productsService.sendToProductsQueue().then(res => {
-        expect(res).toBeInstanceOf(Observable);
-      });
+  describe('sendToProductsQueue method', () => {
+    it('should send data to queue instance', () => {
+      simulationNatsClient.send.mockReturnValueOnce(
+        of('mocked data- products queue'),
+      );
+      productsService.sendToProductsQueue();
+      expect(simulationNatsClient.send).toBeCalledWith('products', {});
     });
   });
   describe('sendToProductIdQueue(id)', () => {
-    it('should return promise fulfilled with Observable', async () => {
-      await productsService.sendToProductIdQueue('2').then(res => {
-        expect(res).toBeInstanceOf(Observable);
-      });
+    it('should return promise fulfilled with Observable', () => {
+      simulationNatsClient.send.mockReturnValueOnce(
+        of('mocked data- product.id queue'),
+      );
+      productsService.sendToProductIdQueue('2');
+      expect(simulationNatsClient.send).toBeCalledWith('product.2', {});
     });
   });
 });

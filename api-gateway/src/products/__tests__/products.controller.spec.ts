@@ -1,57 +1,46 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProductsController } from '../products.controller';
 import { ProductsService } from '../products.service';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
+import { ProductsServiceMock } from '../../utils/unit-test/products.service.mock';
 
 describe('Products Controller', () => {
   let productsController: ProductsController;
-  let productsService: ProductsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        ClientsModule.register([
-          {
-            name: 'NATS_CLIENT',
-            transport: Transport.NATS,
-            options: {
-              url: 'nats://localhost:4222',
-            },
-          },
-        ]),
+      providers: [
+        {
+          provide: ProductsService,
+          useClass: ProductsServiceMock,
+        },
       ],
       controllers: [ProductsController],
-      providers: [ProductsService],
     }).compile();
 
     productsController = module.get<ProductsController>(ProductsController);
-    productsService = module.get<ProductsService>(ProductsService);
   });
 
   it('should be defined', () => {
     expect(productsController).toBeDefined();
   });
-  describe('sendToProductsQueue()', () => {
-    it('should return any products array ', async () => {
-      jest
-        .spyOn(productsService, 'sendToProductsQueue')
-        .mockImplementation(
-          () => (['product1'] as undefined) as Promise<Observable<any>>,
-        );
-      expect(await productsService.sendToProductsQueue()).toEqual(['product1']);
+  describe('getProducts method', () => {
+    it('should return array of products', () => {
+      return productsController
+        .getProducts()
+        .toPromise()
+        .then(products => {
+          expect(products.length).toBeGreaterThan(0);
+        });
     });
   });
-  describe('sendToProductIdQueue()', () => {
-    it('should return any product by id', async () => {
-      jest
-        .spyOn(productsService, 'sendToProductIdQueue')
-        .mockImplementation(
-          () => ('product by id' as undefined) as Promise<Observable<any>>,
-        );
-      expect(await productsService.sendToProductIdQueue('2')).toEqual(
-        'product by id',
-      );
+  describe('getProductById method', () => {
+    it('should return product by id', () => {
+      return productsController
+        .getProductById('2')
+        .toPromise()
+        .then(productById => {
+          expect(productById.id).toEqual(2);
+        });
     });
   });
 });
