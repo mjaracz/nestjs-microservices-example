@@ -2,7 +2,7 @@
   "name": "mailer-service",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "mjaracz",
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",

@@ -3,7 +3,8 @@
 ### Launch the project
 
 First of all install dependency, start database service and message broker service, then run each of microservice <br />
-If you use linux based operating system, to do above few things, just type in root directory <br/>
+If you use linux based operating system, to do above few things, just type in root directory <br />
+
 ```bash
 $ sh ./runAllServices.sh
 ```
