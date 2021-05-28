@@ -1,14 +1,14 @@
 import { ProductsService } from '../products.service';
 import { ClientProxy } from '@nestjs/microservices';
 import { of } from 'rxjs';
-import { mock } from '../../utils/unit-test/client-proxy.mock';
+import { generateClientProxyMock } from '../../utils/unit-test/client-proxy.mock';
 
 describe('ProductsService', () => {
   let productsService: ProductsService;
   let simulationNatsClient: jest.Mocked<ClientProxy>;
 
   beforeEach(() => {
-    simulationNatsClient = mock<ClientProxy>('send');
+    simulationNatsClient = generateClientProxyMock<ClientProxy>('send');
     productsService = new ProductsService(simulationNatsClient);
   });
 
