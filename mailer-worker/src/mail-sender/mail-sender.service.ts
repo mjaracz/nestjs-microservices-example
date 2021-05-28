@@ -12,7 +12,6 @@ export class MailSenderService {
   }
 
   async sendMail(email: string, username: string) {
-    console.log(email, username);
     return this.mailerService.sendMail({
       to: email,
       from: 'michaljaracz2@gmail.com',
@@ -24,7 +23,7 @@ export class MailSenderService {
       }
     })
       .then((res) => {
-        this.logger.verbose('mail was send')
+        this.logger.verbose(`mail to ${email}, was sucesfull send`)
         return res
       })
       .catch((err) => {
