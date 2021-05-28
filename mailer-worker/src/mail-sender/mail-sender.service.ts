@@ -1,15 +1,18 @@
-import {Injectable, Logger} from '@nestjs/common'
-import {MailerService} from '@nestjs-modules/mailer'
+import { Injectable, Logger } from '@nestjs/common'
+import { MailerService } from '@nestjs-modules/mailer'
 
 @Injectable()
 export class MailSenderService {
+  private logger;
+
   constructor(
     private readonly mailerService: MailerService
   ) {
     this.logger = new Logger()
   }
-  private logger;
+
   async sendMail(email: string, username: string) {
+    console.log(email, username);
     return this.mailerService.sendMail({
       to: email,
       from: 'michaljaracz2@gmail.com',
